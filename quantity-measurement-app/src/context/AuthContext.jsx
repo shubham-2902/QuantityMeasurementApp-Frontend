@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     setLoading(true);
-    
+
     // Check URL for OAuth success
     const params = new URLSearchParams(window.location.search);
     if (params.get('oauth_success') === 'true') {
@@ -52,9 +52,9 @@ export function AuthProvider({ children }) {
       const response = await axios.get('http://localhost:8080/api/auth/me', {
         withCredentials: true
       });
-      
+
       console.log("📡 Backend response:", response.data);
-      
+
       if (response.data && response.data.email) {
         const user = {
           email: response.data.email,
@@ -77,9 +77,9 @@ export function AuthProvider({ children }) {
       const response = await authAPI.login({ email, password });
       if (response.data.success) {
         // Don't store token in localStorage anymore - use cookie only
-        const user = { 
-          email: response.data.email, 
-          name: response.data.name || email.split('@')[0] 
+        const user = {
+          email: response.data.email,
+          name: response.data.name || email.split('@')[0]
         };
         setSessionState(user);
         toast.success('Login successful!');
@@ -116,8 +116,31 @@ export function AuthProvider({ children }) {
     toast.info('Logged out');
   }
 
+  async function deleteAccount() {
+    try {
+      // It's good practice to clear history before deleting the account so orphan data doesn't remain.
+      // But we will make the History panel call clearHistory first, or just call it here. Let's call it here just to be safe.
+      try {
+        await import('../services/api').then(module => module.historyAPI.clearHistory());
+      } catch (err) {
+        console.error('Error clearing history:', err);
+      }
+
+      const response = await authAPI.deleteAccount();
+      if (response.data && (response.status === 200 || response.status === 204)) {
+        setSessionState(null);
+        toast.info('Account deleted successfully');
+        return true;
+      }
+    } catch (error) {
+      console.error('Delete account error:', error);
+      toast.error(error.response?.data?.error || 'Failed to delete account');
+      return false;
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ session, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ session, login, signup, logout, deleteAccount, loading }}>
       {children}
     </AuthContext.Provider>
   );

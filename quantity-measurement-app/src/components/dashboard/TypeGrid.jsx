@@ -52,28 +52,38 @@ const TYPES = [
 
 export default function TypeGrid({ selected, onSelect }) {
   return (
-    <div className="grid grid-cols-4 gap-3.5 max-sm:grid-cols-2 max-sm:gap-2.5">
-      {TYPES.map(({ type, label, icon }) => {
-        const isActive = selected === type
+    <div className="grid grid-cols-4 gap-4 max-sm:grid-cols-2">
+      {TYPES.map(({ type, icon, label }) => {
+        const isSelected = selected === type;
         return (
           <button
             key={type}
-            type="button"
             onClick={() => onSelect(type)}
-            className={`border-2 rounded-[14px] py-[18px] px-3 pb-3.5 flex flex-col items-center gap-2.5
-              text-[13px] font-bold transition-all duration-200 select-none group
-              ${isActive
-                ? 'border-[#3b5bdb] bg-[#eef2ff] text-[#3b5bdb] shadow-[0_4px_16px_rgba(59,91,219,0.18)]'
-                : 'border-[#e0e7ff] bg-[#fafbff] text-[#6b7280] hover:border-[#3b5bdb] hover:text-[#3b5bdb] hover:shadow-[0_6px_20px_rgba(59,91,219,0.15)] hover:-translate-y-0.5'
-              } active:scale-[0.98]`}
+            className={`
+              relative flex flex-col items-center justify-center p-5 rounded-xl border-[1.5px] transition-all duration-300
+              ${isSelected 
+                ? 'bg-blue-50/80 dark:bg-brand-600/10 border-brand-600 dark:border-brand-500 shadow-[0_4px_12px_rgba(59,91,219,0.15)] dark:shadow-[0_4px_12px_rgba(59,91,219,0.25)] scale-[1.02]' 
+                : 'bg-white dark:bg-slate-800/80 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-white/30 hover:bg-gray-50 dark:hover:bg-slate-700/80 hover:-translate-y-0.5'
+              }
+            `}
           >
-            <div className={`w-10 h-10 transition-transform duration-200 ${!isActive ? 'group-hover:scale-110' : ''}`}>
-              {icon}
+            <div className={`mb-3 transition-colors duration-300 ${isSelected ? 'text-[#3b5bdb] dark:text-[#4f73fd]' : 'text-gray-400 dark:text-gray-400'}`}>
+              <div className="w-10 h-10">
+                {icon}
+              </div>
             </div>
-            <span>{label}</span>
+            <span className={`text-[13px] font-bold tracking-wide transition-colors duration-300 ${
+              isSelected ? 'text-[#1a1f6e] dark:text-white' : 'text-[#6b7280] dark:text-gray-300'
+            }`}>
+              {label}
+            </span>
+            
+            {isSelected && (
+              <div className="absolute -bottom-1.5 w-8 h-1 decoration-clone bg-brand-600 dark:bg-brand-500 rounded-full animate-fadeIn shadow-sm"></div>
+            )}
           </button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -27,6 +27,7 @@ export const authAPI = {
   logout: () => axios.post(`${AUTH_BASE_URL}/logout`, {}, { withCredentials: true }),
   getCurrentUser: () => axios.get(`${API_BASE_URL}/auth/me`, { withCredentials: true }), // ✅ ADD THIS
   getOAuthUrl: () => 'http://localhost:8080/oauth2/authorization/google',
+  deleteAccount: () => axios.delete(`${API_BASE_URL}/auth/account`, { withCredentials: true }),
 };
 
 // Quantity APIs
@@ -46,6 +47,7 @@ export const historyAPI = {
   getByType: (type) => api.get(`/history/type/${type}`),
   getErrors: () => api.get('/history/errors'),
   getCount: (operation) => api.get(`/history/count/${operation}`),
+  clearHistory: () => api.delete('/history'),
 };
 
 export default api;

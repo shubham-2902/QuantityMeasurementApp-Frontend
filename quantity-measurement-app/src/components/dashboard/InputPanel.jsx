@@ -135,23 +135,17 @@ export default function InputPanel({ measureType, action }) {
     }
   }, [fromVal, toVal, fromUnit, toUnit, op, action, measureType]);
 
-  useEffect(() => { 
-    // ✅ Skip calculation if temperature arithmetic
-    if (measureType === 'temperature' && action === 'arithmetic') {
-      return;
-    }
-    calculate(); 
-  }, [calculate, measureType, action]);
+  // Removed auto-calculation so that it only runs on button click
 
   const isConversion = action === 'conversion';
-  const inputCls = 'font-raleway text-[32px] font-extrabold text-[#1a1a2e] border-0 border-b-2 border-[#e0e7ff] outline-none bg-transparent w-full py-1 transition-all duration-200 focus:border-[#3b5bdb] max-sm:text-2xl';
-  const selectCls = 'mt-0.5 px-3 py-2 border-[1.5px] border-[#e0e7ff] rounded-lg font-nunito text-[14px] font-bold text-[#1a1a2e] bg-white cursor-pointer outline-none transition-all duration-200 hover:border-[#b0b8e0] focus:border-[#3b5bdb] focus:shadow-[0_0_0_3px_rgba(59,91,219,0.10)] w-full';
+  const inputCls = 'font-raleway text-[32px] font-extrabold text-[#1a1a2e] dark:text-gray-100 border-0 border-b-2 border-gray-200 dark:border-white/20 outline-none bg-transparent w-full py-1 transition-all duration-300 focus:border-[#3b5bdb] dark:focus:border-[#4f73fd] max-sm:text-2xl placeholder-gray-300 dark:placeholder-gray-600';
+  const selectCls = 'mt-0.5 px-3 py-2 border-[1.5px] border-gray-200 dark:border-white/10 rounded-lg font-nunito text-[14px] font-bold text-[#1a1a2e] dark:text-gray-200 bg-white dark:bg-[#1a2235] cursor-pointer outline-none transition-all duration-300 hover:border-gray-300 dark:hover:border-white/20 focus:border-[#3b5bdb] dark:focus:border-[#4f73fd] focus:shadow-[0_0_0_3px_rgba(59,91,219,0.10)] w-full';
 
   return (
     <div>
       <div className="flex items-end gap-5 flex-wrap max-sm:gap-2.5">
-        <div className="flex-1 min-w-[140px] flex flex-col gap-2">
-          <p className="text-[11px] font-extrabold tracking-[2px] text-[#6b7280]">
+        <div className="flex-1 min-w-[140px] flex flex-col gap-2 relative">
+          <p className="text-[11px] font-extrabold tracking-[2px] text-gray-500 dark:text-gray-400">
             {action === 'arithmetic' ? 'VALUE A' : 'FROM'}
           </p>
           <input type="number" value={fromVal} onChange={(e) => setFromVal(e.target.value)} className={inputCls} />
@@ -160,19 +154,19 @@ export default function InputPanel({ measureType, action }) {
           </select>
         </div>
 
-        <div className="flex items-center justify-center pb-7 min-w-[70px] relative max-sm:pb-4">
+        <div className="flex items-center justify-center pb-7 min-w-[70px] relative max-sm:pb-4 text-[#3b5bdb] dark:text-[#4f73fd]">
           {action === 'arithmetic' && isArithmeticAllowed ? (
             <OpDropdown selected={op} onSelect={setOp} />
           ) : (
-            <svg viewBox="0 0 40 20" width="40" fill="none">
-              <line x1="4" y1="10" x2="28" y2="10" stroke="#3b5bdb" strokeWidth="2.5" strokeLinecap="round"/>
-              <polyline points="22,4 32,10 22,16" stroke="#3b5bdb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg viewBox="0 0 40 20" width="40" fill="none" className="drop-shadow-sm">
+              <line x1="4" y1="10" x2="28" y2="10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+              <polyline points="22,4 32,10 22,16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           )}
         </div>
 
-        <div className="flex-1 min-w-[140px] flex flex-col gap-2">
-          <p className="text-[11px] font-extrabold tracking-[2px] text-[#6b7280]">
+        <div className="flex-1 min-w-[140px] flex flex-col gap-2 relative">
+          <p className="text-[11px] font-extrabold tracking-[2px] text-gray-500 dark:text-gray-400">
             {action === 'arithmetic' ? 'VALUE B' : 'TO'}
           </p>
           <input 
@@ -189,10 +183,20 @@ export default function InputPanel({ measureType, action }) {
         </div>
       </div>
 
-      <div key={resultKey} className="mt-6 flex items-center gap-3.5 bg-[#eef2ff] rounded-[10px] px-5 py-3.5 border-l-4 border-[#3b5bdb] min-h-[52px] animate-popIn">
-        <span className={`text-[17px] font-extrabold tracking-wide max-sm:text-sm ${isError ? 'text-[#e53935]' : 'text-[#3b5bdb]'}`}>
-          {loading ? 'Calculating...' : (result || 'Select type and values to begin')}
-        </span>
+      <div className="mt-8 flex flex-col gap-5">
+        <button 
+          onClick={calculate} 
+          disabled={loading || (measureType === 'temperature' && action === 'arithmetic')}
+          className="w-full py-3.5 bg-gradient-to-r from-[#3b5bdb] to-[#1a1f6e] dark:from-[#4f73fd] dark:to-[#3b5bdb] text-white rounded-xl font-bold text-lg shadow-md hover:shadow-lg dark:hover:shadow-[#4f73fd]/20 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+        >
+          {loading ? 'Executing...' : 'Execute Calculation'}
+        </button>
+
+        <div key={resultKey} className="flex items-center gap-3.5 bg-gray-50/80 dark:bg-slate-900/50 rounded-xl px-6 py-4 border-l-[5px] border-[#3b5bdb] dark:border-[#4f73fd] shadow-inner transition-colors duration-300 min-h-[60px] animate-popIn">
+          <span className={`text-[17px] font-extrabold tracking-wide max-sm:text-sm ${isError ? 'text-red-500 max-sm:text-xs' : 'text-[#3b5bdb] dark:text-[#4f73fd]'} transition-colors duration-300`}>
+            {loading ? 'Calculating...' : (result || 'Awaiting execution...')}
+          </span>
+        </div>
       </div>
     </div>
   );

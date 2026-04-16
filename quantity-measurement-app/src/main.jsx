@@ -7,13 +7,17 @@ import { AuthProvider } from './context/AuthContext';
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { ThemeProvider } from './context/ThemeContext';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <App />
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+          <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop theme="colored" />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -4,6 +4,9 @@
 
 @layer base {
   * { box-sizing: border-box; }
+  html, body {
+    transition: all 0.3s ease;
+  }
   body {
     font-family: 'Nunito', sans-serif;
     -webkit-font-smoothing: antialiased;

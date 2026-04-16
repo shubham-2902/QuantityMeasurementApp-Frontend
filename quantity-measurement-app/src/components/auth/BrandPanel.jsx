@@ -1,4 +1,4 @@
-export default function BrandPanel() {
+ export default function BrandPanel() {
   return (
     <div className="w-[230px] shrink-0 bg-gradient-to-br from-[#1a1f6e] to-[#3b5bdb] flex flex-col items-center justify-center px-5 py-8 gap-3 max-sm:w-full max-sm:flex-row max-sm:justify-start max-sm:py-5 max-sm:px-6">
       {/* Logo */}
