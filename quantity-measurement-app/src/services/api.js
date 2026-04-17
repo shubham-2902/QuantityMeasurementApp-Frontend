@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
-const AUTH_BASE_URL = 'http://localhost:8080/auth';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const AUTH_BASE_URL = import.meta.env.VITE_AUTH_BASE_URL || 'http://localhost:8080/auth';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -26,7 +26,7 @@ export const authAPI = {
   login: (credentials) => axios.post(`${AUTH_BASE_URL}/login`, credentials, { withCredentials: true }),
   logout: () => axios.post(`${AUTH_BASE_URL}/logout`, {}, { withCredentials: true }),
   getCurrentUser: () => axios.get(`${API_BASE_URL}/auth/me`, { withCredentials: true }), // ✅ ADD THIS
-  getOAuthUrl: () => 'http://localhost:8080/oauth2/authorization/google',
+  getOAuthUrl: () => import.meta.env.VITE_OAUTH_URL || 'http://localhost:8080/oauth2/authorization/google',
   deleteAccount: () => axios.delete(`${API_BASE_URL}/auth/account`, { withCredentials: true }),
 };
 
